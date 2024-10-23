@@ -102,7 +102,7 @@ function handleDropdownChange() {
     if (designPhase) {
         sliderContainer.classList.remove('hidden'); // Show slider if an option is selected
     } else {
-        sliderContainer.classList.add('hidden'); // Hide slider if no option is selected update
+        sliderContainer.classList.add('hidden'); // Hide slider if no option is selected -tooltip
     }
 }
 
