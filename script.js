@@ -1,53 +1,30 @@
 const ctx = document.getElementById('myChart').getContext('2d');
 let myChart;
 
-// Initialize data variables
 let currentDataPoints = ['Creative Director', 'Senior 3D', 'Senior 2D', '3D Designer', '2D Designer'];
+let chartData = new Array(currentDataPoints.length).fill(0);
 
-// Initialize chart data
-let chartData = new Array(currentDataPoints.length).fill(0); // Initialize budget values to 0
-
-// Update the chart when the slider value changes or design phase changes
 function updateChart() {
     const timeInDays = parseFloat(document.getElementById('timeSlider').value);
     const designPhase = document.getElementById('designPhase').value;
 
-    // Update displayed days value
     document.getElementById('budgetValue').textContent = `${timeInDays} Days`;
-
-    let totalDays = timeInDays;
     let distribution;
 
-    // Set distribution based on selected design phase
     if (designPhase === 'concept') {
-        distribution = [0.60, 0.20, 0.20, 0, 0]; // Concept distribution
+        distribution = [0.60, 0.20, 0.20, 0, 0];
     } else if (designPhase === 'design') {
-        distribution = [0.10, 0.30, 0.30, 0.10, 0.20]; // Design distribution
-    } else { // Default
-        distribution = [0, 0, 0, 0, 0]; // Even distribution
+        distribution = [0.10, 0.30, 0.30, 0.10, 0.20];
+    } else {
+        distribution = [0, 0, 0, 0, 0];
     }
 
-    // Calculate budget values
-    chartData = distribution.map((percentage) => (percentage * totalDays).toFixed(2));
-    
-    // Update the chart with the new data
+    chartData = distribution.map((percentage) => (percentage * timeInDays).toFixed(2));
     createChart(chartData);
+    updateBreakdown(chartData);
 }
 
-function updateSliderBackground() {
-    const rangeInput = document.getElementById('timeSlider');
-    const max = rangeInput.max;
-    const min = rangeInput.min;
-    const value = rangeInput.value;
-    const percentage = ((value - min) / (max - min)) * 100; // Calculate percentage
-
-    // Update background gradient
-    rangeInput.style.background = `linear-gradient(to right, #287155 ${percentage}%, #505050 ${percentage}%)`;
-}
-
-// Create the chart using the provided data
 function createChart(data) {
-    // Destroy existing chart instance if present
     if (myChart) {
         myChart.destroy();
     }
@@ -59,39 +36,23 @@ function createChart(data) {
             datasets: [{
                 label: 'Days Allocated',
                 data: data,
-                backgroundColor: [
-                    '#B4E2A5', // Color for Creative Director
-                    '#009159', // Color for Senior 3D
-                    '#004733', // Color for Senior 2D
-                    '#92D400', // Color for 3D Designer
-                    '#E9F7DB'  // Color for 2D Designer
-                ],
+                backgroundColor: ['#B4E2A5', '#009159', '#3EC687', '#92D400', '#E9F7DB'],
             }],
         },
         options: {
-            indexAxis: 'y', // This makes the chart horizontal
+            indexAxis: 'y',
             scales: {
                 x: {
                     beginAtZero: true,
-                    max: 30, // Fixed maximum value on the x-axis
-                    title: {
-                        display: true,
-                        text: 'Days' // X-axis title
-                    },
+                    title: { display: true, text: 'Days' },
                 },
                 y: {
-                    title: {
-                        display: true,
-                        text: 'Roles' // Y-axis title
-                    },
+                    title: { display: true, text: 'Roles' },
                 },
             },
             responsive: true,
-            maintainAspectRatio: false,
             plugins: {
-                legend: {
-                    display: false, // Hide legend as it's not needed
-                },
+                legend: { display: false },
                 tooltip: {
                     callbacks: {
                         label: function(tooltipItem) {
@@ -105,6 +66,36 @@ function createChart(data) {
     });
 }
 
+function updateBreakdown(data) {
+    const breakdownContainer = document.getElementById('breakdownValues');
+    breakdownContainer.innerHTML = ''; // Clear previous content
+
+    const colors = ['#B4E2A5', '#009159', '#3EC687', '#92D400', '#E9F7DB']; // Colors used in the chart
+
+    data.forEach((days, index) => {
+        const breakdownItem = document.createElement('div');
+        breakdownItem.className = 'breakdown-item';
+        
+        // Use the corresponding color for each role and format days to 1 decimal place
+        breakdownItem.innerHTML = `
+            <div>${currentDataPoints[index]}</div>
+            <div class="breakdown-value" style="color: ${colors[index]}">${parseFloat(days).toFixed(1)} Days</div>
+        `;
+        breakdownContainer.appendChild(breakdownItem);
+    });
+}
+
+
+function updateSliderBackground() {
+    const rangeInput = document.getElementById('timeSlider');
+    const max = rangeInput.max;
+    const min = rangeInput.min;
+    const value = rangeInput.value;
+    const percentage = ((value - min) / (max - min)) * 100;
+
+    rangeInput.style.background = `linear-gradient(to right, #287155 ${percentage}%, #505050 ${percentage}%)`;
+}
+
 // Initialize the chart on page load
 updateChart();
-updateSliderBackground(); // Initialize the slider background
+updateSliderBackground();
