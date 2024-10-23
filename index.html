@@ -9,7 +9,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
-            background-color: #242424;
+            background-color: #2C2C2C;
             color: #F7F7F7;
             font-family: 'Metropolis', sans-serif;
             overflow-x: hidden; /* Prevent horizontal scrolling */
@@ -36,15 +36,19 @@
             width: 100%; /* Full width */
             height: 300px; /* Fixed height */
             max-height: 300px; /* Ensure max height */
-            position: relative; /* Position relative to prevent growing */
+            position: relative;
+            margin-top: 50px; /* Position relative to prevent growing */
         }
 
         .controls-container {
             display: flex; /* Create a flex container for alignment */
             justify-content: center; /* Center items horizontally */
-            align-items: flex-start; /* Align at the top */
-            margin: 40px;
-            width: 80%; /* Full width */
+            align-items: center; /* Align items vertically */
+            margin: 0px;
+            width: 65%; /* Full width */
+            background-color: #191919; /* Background color for the container */
+            border-radius: 40px; /* Rounded corners */
+            padding: 15px; /* Padding around the container */
         }
 
         .controls-item {
@@ -52,6 +56,14 @@
             flex-direction: column; /* Stack items vertically for individual adjustments */
             align-items: center; /* Center align items */
             margin-right: 20px; /* Add space to the right of the dropdown */
+        }
+
+        .divider {
+            width: 2px; /* Width of the divider */
+            height: 40px; /* Height of the divider */
+            background-color: #505050; /* Divider color */
+            margin: 0 20px; /* Margin around the divider */
+            border-radius: 1px
         }
 
         .slider-container {
@@ -91,15 +103,16 @@
         }
 
         select {
-            background-color: #505050; /* Match background with the rest of the design */
-            color: #F7F7F7; /* Text color */
+            background-color: transparent; /* No background color for dropdown */
+            color: #7A7A7A; /* Text color */
             border: none; /* Remove default border */
             border-radius: 5px; /* Match the rounded corners */
             padding: 10px; /* Add padding for a better look */
             padding-right: 30px; /* Padding for dropdown arrow */
-            font-size: 16px; /* Adjust font size */
-            width: 200px; /* Set a fixed width */
-            margin-bottom: 10px; /* Space below the dropdown */
+            font-size: 18px; /* Adjust font size for visibility */
+            font-weight: bold; /* Make it bold */
+            width: 175px; /* Set a fixed width */
+            margin-bottom: 0px; /* Space below the dropdown */
             appearance: none; /* Remove default styling */
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="5" viewBox="0 0 10 5"><polygon fill="%23009159" points="0,0 5,5 10,0" /></svg>'); /* Custom arrow */
             background-repeat: no-repeat; /* Prevent the background from repeating */
@@ -115,7 +128,7 @@
             color: #009159; /* Set text color */
             font-size: 18px; /* Adjust font size for visibility */
             font-weight: bold; /* Make it bold */
-            margin-left: 10px; /* Space between label and value */
+            margin-left: 0px; /* Space between label and value */
         }
     </style>
 </head>
@@ -131,11 +144,12 @@
                     <option value="design">Design</option>
                 </select>
             </div>
+            <div class="divider"></div> <!-- Vertical divider -->
             <div class="slider-container">
                 <div class="days-label">
                     <span id="budgetValue" class="budget-value">0 Days</span> <!-- Only keep the budget value -->
                 </div>
-                <input type="range" id="timeSlider" min="0" max="35" step="0.5" value="0"
+                <input type="range" id="timeSlider" min="0" max="60" step="0.5" value="0"
                     oninput="updateChart(); updateSliderBackground();" />
             </div>
         </div>
@@ -145,3 +159,116 @@
 </body>
 
 </html>
+
+<script>
+    const ctx = document.getElementById('myChart').getContext('2d');
+    let myChart;
+
+    // Initialize data variables
+    let currentDataPoints = ['Creative Director', 'Senior 3D', 'Senior 2D', '3D Designer', '2D Designer'];
+
+    // Initialize chart data
+    let chartData = new Array(currentDataPoints.length).fill(0); // Initialize budget values to 0
+
+    // Update the chart when the slider value changes or design phase changes
+    function updateChart() {
+        const timeInDays = parseFloat(document.getElementById('timeSlider').value);
+        const designPhase = document.getElementById('designPhase').value;
+
+        // Update displayed days value
+        document.getElementById('budgetValue').textContent = `${timeInDays} Days`;
+
+        let totalDays = timeInDays;
+        let distribution;
+
+        // Set distribution based on selected design phase
+        if (designPhase === 'concept') {
+            distribution = [0.60, 0.20, 0.20, 0, 0]; // Concept distribution
+        } else if (designPhase === 'design') {
+            distribution = [0.10, 0.30, 0.30, 0.10, 0.20]; // Design distribution
+        } else { // Default
+            distribution = [0, 0, 0, 0, 0]; // Even distribution
+        }
+
+        // Calculate budget values
+        chartData = distribution.map((percentage) => (percentage * totalDays).toFixed(2));
+
+        // Update the chart with the new data
+        createChart(chartData);
+    }
+
+    function updateSliderBackground() {
+        const rangeInput = document.getElementById('timeSlider');
+        const max = rangeInput.max;
+        const min = rangeInput.min;
+        const value = rangeInput.value;
+        const percentage = ((value - min) / (max - min)) * 100; // Calculate percentage
+
+        // Update background gradient
+        rangeInput.style.background = `linear-gradient(to right, #287155 ${percentage}%, #505050 ${percentage}%)`;
+    }
+
+    // Create the chart using the provided data
+    function createChart(data) {
+        // Destroy existing chart instance if present
+        if (myChart) {
+            myChart.destroy();
+        }
+
+        myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: currentDataPoints,
+                datasets: [{
+                    label: 'Days Allocated',
+                    data: data,
+                    backgroundColor: [
+                        '#B4E2A5', // Color for Creative Director
+                        '#009159', // Color for Senior 3D
+                        '#004733', // Color for Senior 2D
+                        '#92D400', // Color for 3D Designer
+                        '#E9F7DB'  // Color for 2D Designer
+                    ],
+                }],
+            },
+            options: {
+                indexAxis: 'y', // This makes the chart horizontal
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        max: 30, // Fixed maximum value on the x-axis
+                        title: {
+                            display: true,
+                            text: 'Days' // X-axis title
+                        },
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Roles' // Y-axis title
+                        },
+                    },
+                },
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false, // Hide legend as it's not needed
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(tooltipItem) {
+                                const value = tooltipItem.parsed.x;
+                                return `${value} Days`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Initialize the chart on page load
+    updateChart();
+    updateSliderBackground(); // Initialize the slider background
+</script>
