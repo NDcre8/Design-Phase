@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,6 +18,36 @@
             text-align: center;
             margin-top: 100px;
             margin-bottom: 20px;
+            position: relative; /* Needed for tooltip positioning */
+        }
+
+        .info-icon {
+            cursor: pointer; /* Change cursor to pointer */
+            margin-left: 10px; /* Space between title and icon */
+            font-size: 18px; /* Size of the icon */
+            color: #009159; /* Icon color */
+        }
+
+        .tooltip {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 100%; /* Position below the icon */
+            background-color: #333; /* Background color for tooltip */
+            color: #fff;
+            text-align: center;
+            border-radius: 5px;
+            padding: 5px;
+            width: 250px; /* Fixed width for consistency */
+            visibility: hidden; /* Start hidden */
+            opacity: 0; /* Start fully transparent */
+            transition: opacity 0.3s; /* Smooth transition */
+            z-index: 10; /* Ensure it appears above other elements */
+        }
+
+        .info-icon:hover + .tooltip {
+            visibility: visible; /* Show the tooltip on hover */
+            opacity: 1; /* Make it visible */
         }
 
         .chart-container {
@@ -42,18 +71,19 @@
 
         .controls-container {
             display: flex;
-            align-items: center; /* Align items vertically in the center */
+            align-items: center;
             width: 60%;
             background-color: #191919;
             border-radius: 40px;
             padding: 15px;
-            margin: 0 auto; /* Keep the controls centered as a block */
+            margin: 0 auto;
+            position: relative; /* Required for the tooltip */
         }
 
         .controls-item {
             display: flex;
             flex-direction: column;
-            align-items: flex-start; /* Align items to the left */
+            align-items: flex-start;
             margin-right: 20px;
         }
 
@@ -147,7 +177,7 @@
             color: #F7F7F7;
             font-size: 12px;
             text-align: center;
-            margin: 0 15px; /* Adds margin to each breakdown item */
+            margin: 0 15px;
         }
 
         .breakdown-value {
@@ -157,9 +187,12 @@
         }
     </style>
 </head>
-
 <body>
-    <h1>Design Phase / Studio Time</h1>
+    <h1>
+        Design Phase / Studio Time
+        <span class="info-icon">i</span>
+        <div class="tooltip">Select a design phase for your project. Once selected, use the slider to select an amount of studio days required.</div>
+    </h1>
     <div class="chart-container">
         <div class="controls-container">
             <div class="controls-item">
@@ -170,7 +203,7 @@
                 </select>
             </div>
             <div class="divider"></div>
-            <div class="slider-container hidden"> <!-- Adding hidden class here -->
+            <div class="slider-container hidden">
                 <div class="days-label">
                     <span id="budgetValue" class="budget-value">0 Days</span>
                 </div>
@@ -187,5 +220,4 @@
 
     <script src="script.js"></script>
 </body>
-
 </html>
