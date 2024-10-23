@@ -19,7 +19,7 @@ function updateChart() {
         distribution = [0, 0, 0, 0, 0];
     }
 
-    chartData = distribution.map((percentage) => (percentage * timeInDays).toFixed(2));
+    chartData = distribution.map((percentage) => (percentage * timeInDays).toFixed(1)); // Changed to 1 decimal place
     createChart(chartData);
     updateBreakdown(chartData);
 }
@@ -85,7 +85,6 @@ function updateBreakdown(data) {
     });
 }
 
-
 function updateSliderBackground() {
     const rangeInput = document.getElementById('timeSlider');
     const max = rangeInput.max;
@@ -94,6 +93,17 @@ function updateSliderBackground() {
     const percentage = ((value - min) / (max - min)) * 100;
 
     rangeInput.style.background = `linear-gradient(to right, #287155 ${percentage}%, #505050 ${percentage}%)`;
+}
+
+function handleDropdownChange() {
+    const designPhase = document.getElementById('designPhase').value;
+    const sliderContainer = document.querySelector('.slider-container');
+
+    if (designPhase) {
+        sliderContainer.classList.remove('hidden'); // Show slider if an option is selected
+    } else {
+        sliderContainer.classList.add('hidden'); // Hide slider if no option is selected
+    }
 }
 
 // Initialize the chart on page load
