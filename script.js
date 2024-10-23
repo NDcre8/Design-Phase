@@ -24,7 +24,7 @@ function updateChart() {
     } else if (designPhase === 'design') {
         distribution = [0.10, 0.30, 0.30, 0.10, 0.20]; // Design distribution
     } else { // Default
-        distribution = new Array(currentDataPoints.length).fill(1 / currentDataPoints.length); // Even distribution
+        distribution = [0, 0, 0, 0, 0]; // Even distribution
     }
 
     // Calculate budget values
