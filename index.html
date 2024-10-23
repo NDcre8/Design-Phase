@@ -42,18 +42,18 @@
 
         .controls-container {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 65%;
+            align-items: center; /* Align items vertically in the center */
+            width: 60%;
             background-color: #191919;
             border-radius: 40px;
             padding: 15px;
+            margin: 0 auto; /* Keep the controls centered as a block */
         }
 
         .controls-item {
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: flex-start; /* Align items to the left */
             margin-right: 20px;
         }
 
@@ -70,6 +70,10 @@
             flex-direction: column;
             align-items: center;
             margin-left: 20px;
+        }
+
+        .hidden {
+            display: none;
         }
 
         input[type="range"] {
@@ -135,7 +139,7 @@
             justify-content: space-around;
             margin-top: 20px;
             padding: 20px;
-            background-color: #333633;
+            background-color: #40473E;
             border-radius: 50px;
         }
 
@@ -143,7 +147,7 @@
             color: #F7F7F7;
             font-size: 12px;
             text-align: center;
-            margin: 0 20px; /* Adds margin to each breakdown item */
+            margin: 0 15px; /* Adds margin to each breakdown item */
         }
 
         .breakdown-value {
@@ -159,14 +163,14 @@
     <div class="chart-container">
         <div class="controls-container">
             <div class="controls-item">
-                <select id="designPhase" onchange="updateChart()">
+                <select id="designPhase" onchange="handleDropdownChange(); updateChart()">
                     <option value="" disabled selected hidden>Select phase...</option>
                     <option value="concept">Concept</option>
                     <option value="design">Design</option>
                 </select>
             </div>
             <div class="divider"></div>
-            <div class="slider-container">
+            <div class="slider-container hidden"> <!-- Adding hidden class here -->
                 <div class="days-label">
                     <span id="budgetValue" class="budget-value">0 Days</span>
                 </div>
