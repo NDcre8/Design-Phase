@@ -14,7 +14,7 @@ function updateChart() {
     if (designPhase === 'concept') {
         distribution = [0.60, 0.20, 0.20, 0, 0];
     } else if (designPhase === 'design') {
-        distribution = [0.10, 0.30, 0.30, 0.10, 0.20];
+        distribution = [0.10, 0.30, 0.30, 0.10, 0.20]; 
     } else {
         distribution = [0, 0, 0, 0, 0];
     }
@@ -102,7 +102,7 @@ function handleDropdownChange() {
     if (designPhase) {
         sliderContainer.classList.remove('hidden'); // Show slider if an option is selected
     } else {
-        sliderContainer.classList.add('hidden'); // Hide slider if no option is selected -tooltip
+        sliderContainer.classList.add('hidden'); // Hide slider if no option is selected
     }
 }
 
